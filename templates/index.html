@@ -1,33 +1,53 @@
 {% extends "layout.html" %}
 {% block content %}
+
 <div class="ui container">
 	<img class="ui fluid image" src="/static/images/ChessPlayerAnalysis_6.png">
 	<h1 class="ui center aligned huge header">Chess Style Analyzer</h1>
-	<div class="ui column">Find your Style. Find your favourite GM.</div>
+	
+	<h2 class="ui dividing header"> 使い方 </h2>
+	<div class="ui container">
+	以下のPut your PGN!の入力フォーマットに、PGN形式のゲーム、名前(PGN形式のゲーム中の、"White"あるいは"Black"タグに書かれているものと同じ名前を記入してください)、レーティング
+	を入力し、Analyzeをクリックしてください。<br>
+	PGNのゲームは複数入力してください。ただし、ゲーム数が多すぎると解析ができないため、最大でも250ゲーム程度としてください。<br>
+	補正されたドロー率、中盤/終盤傾向の値を、歴代世界チャンピオンを含む複数のグランドマスターと比較した結果が出力されます。
+	</div>
 
 	<h2 class="ui dividing header"> Put your PGN! </h2>
 
 	<form class="ui form" action="/analyze" method="POST">
 		<div class="two fields">
 			<div class="field">
-				<label>name:</label>
+				<label>name</label>
 				<input name="player_name" type="text" placeholder="Your name in PGN File">
 			</div>
 			<div class="field">
-				<label>rating:</label>
+				<label>rating</label>
 				<input name="rating" type="text" placeholder="Your FIDE (or any other OTB) rating">
 			</div>
 		</div>
 		<div class="field">
-			<label>your PGN: (Multiple games are neccessary.)</label>
+			<label>PGN</label>
 			<textarea name="pgn"></textarea>
 		</div>
 		<div class="ui right aligned grid">
 			<div class="sixteen wide column">
-				<button class="ui primary submit button">Submit</button>
+				<button class="ui primary submit button">Analyze</button>
 			</div>
 		</div>
 	</form>
 </div>
+
+<script>
+$('.ui.form')
+  .form({
+    fields: {
+      player_name     : 'empty',
+	  rating   : ['empty','integer'],
+	  pgn      : 'empty'
+    }
+  })
+;
+</script>
 
 {% endblock %}
