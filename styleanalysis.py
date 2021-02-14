@@ -1,4 +1,6 @@
 import sys,os,io
+import base64
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -218,11 +220,14 @@ def save_scatterplot(ary):
 
     for key,row in df.iterrows():
         h.ax_joint.text(row["draw_percentage"], row["middlegame_tendency"],row["Name"],fontsize=14) 
-
-    filename = "SD_%s.png" % randomname(12)
-    plt.savefig("static/images/" + filename)
     
-    return filename
+   
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format="PNG")
+    
+    base64Img = base64.b64encode(buffer.getvalue()).decode().replace("'", "")
+
+    return base64Img
 
 def create_sigmoid():
     #Approximation of https://en.chessbase.com/post/sonas-what-exactly-is-the-problem-
