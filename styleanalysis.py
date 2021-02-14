@@ -98,7 +98,7 @@ class StyleDescriptor():
         approximated_draw_rate = self.sigmoid_for_adjustment(rating)
         GM_draw_rate = self.sigmoid_for_adjustment(GM_rating)
         
-        self.draw_percentage = self.draw_percentage - approximated_draw_rate + GM_draw_rate
+        self.draw_percentage = self.draw_percentage / approximated_draw_rate * GM_draw_rate
         
     
 def return_games(pgn):
