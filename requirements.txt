@@ -13,7 +13,7 @@ numpy
 pandas
 Pillow
 pyparsing
-python-chess
+python-chess==0.31.4
 python-dateutil
 pytz
 scipy
