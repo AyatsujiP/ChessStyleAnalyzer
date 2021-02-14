@@ -1,5 +1,4 @@
 asgiref==3.3.1
-chess
 python-chess
 click==7.1.2
 cycler==0.10.0
