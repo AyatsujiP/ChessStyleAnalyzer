@@ -12,8 +12,9 @@ def index():
 def analyze():
     pgn_text = str(request.form["pgn"])
     player_name = str(request.form["player_name"])
+    rating = int(str(request.form["rating"]))
 
-    filename = styleanalysis.analyze(pgn_text,player_name)
+    filename = styleanalysis.analyze(pgn_text,player_name,rating)
     print(filename)
     return render_template('analyze.html',title='Analyze',filename=filename)
 

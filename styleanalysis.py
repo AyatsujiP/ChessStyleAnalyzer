@@ -80,6 +80,17 @@ class StyleDescriptor():
         
         return np.corrcoef(self.game_result,piece_count)[0,1]
     
+    def sigmoid_for_adjustment(self,x):
+        return 1/(2*(1+np.exp(0.007*(2550-x)))) + 0.2
+    
+    def adjust_draw_percentage(self,rating):
+        GM_rating = 2700
+        approximated_draw_rate = self.sigmoid_for_adjustment(rating)
+        GM_draw_rate = self.sigmoid_for_adjustment(GM_rating)
+        
+        self.draw_percentage = self.draw_percentage - approximated_draw_rate + GM_draw_rate
+        
+    
 def return_games(pgn):
     """
     Input: pgn(FileIO)
@@ -222,7 +233,7 @@ def create_sigmoid():
     print(y)
 
 
-def analyze(pgn_text,player_name):
+def analyze(pgn_text,player_name,rating=1800):
     with io.StringIO(pgn_text) as pgn:
         games, game_num = return_games(pgn)
         logger.info("Game Import Finished. Number of Games: %i " % game_num)
@@ -232,7 +243,11 @@ def analyze(pgn_text,player_name):
         
         sd = StyleDescriptor(games,player_name)
         sd.create_style_descriptor()
+        
+        sd.adjust_draw_percentage(rating)
+        
         sd_self = sd.return_style_descriptor()
+        print(sd_self)
         ary = create_grandmaster_descriptor()
         ary.append(sd_self)
         filename = save_scatterplot(ary)    
