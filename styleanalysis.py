@@ -23,6 +23,8 @@ ch.setLevel(logging.DEBUG)
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
+class PGNParseException(Exception):
+    pass
 
 class StyleDescriptor():
     def __init__(self,games,player_name):
@@ -35,7 +37,13 @@ class StyleDescriptor():
         
         self.games = games_tmp[player_side_tmp != 99]
         self.player_side = player_side_tmp[player_side_tmp != 99]
+        
         self.game_num = len(self.games)
+        
+        if self.game_num == 0:
+            raise PGNParseException("Game number is 0")
+        elif self.game_num == 1:
+            raise PGNParseException("Game number is 1")
         
         self.game_result = return_game_result(self.games,self.player_side)
     

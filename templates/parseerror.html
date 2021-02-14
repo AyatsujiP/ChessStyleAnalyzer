@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="ui container">
+	<h1 class="ui center aligned huge header">Chess Style Analyzer</h1>
+	
+	<div class="ui text container">
+	<h2 class="ui big header">PGN Parse Error!</h1>
+	<p>{{error_message}}<br><br></p>
+	</div>
+	<div class="ui center aligned grid">
+	  <div class="thirteen wide column">
+		<button class="ui right aligned button" type="button" onclick=history.back()>Back to Top</button>
+	  </div>
+	</div>
+<div>
+{% endblock %}
