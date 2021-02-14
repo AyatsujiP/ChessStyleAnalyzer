@@ -14,12 +14,11 @@ def analyze():
     player_name = str(request.form["player_name"])
     rating = int(str(request.form["rating"]))
 
-    filename = styleanalysis.analyze(pgn_text,player_name,rating)
-    print(filename)
-    return render_template('analyze.html',title='Analyze',filename=filename)
+    png_file = styleanalysis.analyze(pgn_text,player_name,rating)
+    return render_template('analyze.html',title='Analyze',png_file=png_file)
 
 
 if __name__ == "__main__":
         
-    app.debug = True
+    app.debug = False
     app.run()
