@@ -234,8 +234,6 @@ def create_sigmoid():
     x = np.arange(1500,2800,100)
     y = 1/(2*(1+np.exp(0.007*(2550-x)))) + 0.2
 
-    print(x)
-    print(y)
 
 
 def analyze(pgn_text,player_name,rating=1800):
@@ -252,7 +250,6 @@ def analyze(pgn_text,player_name,rating=1800):
         sd.adjust_draw_percentage(rating)
         
         sd_self = sd.return_style_descriptor()
-        print(sd_self)
         ary = create_grandmaster_descriptor()
         ary.append(sd_self)
         filename = save_scatterplot(ary)    
@@ -269,7 +266,6 @@ def main(args):
         sd = StyleDescriptor(games,args[2])
         sd.create_style_descriptor()
         sd_self = sd.return_style_descriptor()
-        print(sd_self)
         ary = create_grandmaster_descriptor()
         
         show_scatterplot(ary)
