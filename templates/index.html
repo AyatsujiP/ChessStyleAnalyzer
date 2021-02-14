@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="ui container">
+<img class="ui fluid image" src="/static/images/ChessPlayerAnalysis_6.png">
+<h1 class="ui center aligned huge header">Chess Style Analyzer</h1>
+<div class="ui center aligned column">Find your Style. Find your favourite GM.</div>
+
+<h2 class="ui dividing header"> Put your PGN! </h2>
+
+<form class="ui form" action="/analyze" method="POST">
+  <div class="field">
+    <label>name:</label>
+	<input name="player_name" type="text" placeholder="Your name in PGN File">
+  </div>
+  <div class="field">
+    <label>your PGN: (Multiple games are neccessary.)</label>
+    <textarea name="pgn"></textarea>
+	</div>
+<div class="ui right aligned grid">
+  <div class="thirteen wide column">
+	<button class="ui primary submit button">Submit</button>
+	</div>
+	</div>
+</form>
+</div>
+
+{% endblock %}

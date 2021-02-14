@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="ui container">
+<h1 class="ui center aligned huge header">Chess Style Analyzer</h1>
+
+<div class="ui container">
+<h2 class="ui header">Result:</h2>
+<div class="ui segment">
+  <p>縦軸は中盤/終盤の強さを示します。縦軸の値が大きいほど中盤が強く、小さいほど終盤が強いことを示します。</p>
+  <p>横軸はドロー率を示します。横軸の値が大きいほどドローが多いことを示します。</p>
+</div>
+<img class="ui centered huge image" src="/static/images/{{ filename }}">
+</div>
+<div class="ui right aligned grid">
+  <div class="thirteen wide column">
+    <button class="ui right aligned button" type="button" onclick=history.back()>Back to Top</button>
+  </div>
+</div>
+</div>
+
+{% endblock %}
