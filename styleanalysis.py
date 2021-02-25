@@ -52,12 +52,14 @@ class StyleDescriptor():
         self.draw_percentage = self.return_draw_percentage()
         self.piece_count_at_the_end = self.return_piece_count_at_the_end()
         self.middlegame_tendency = self.return_corr_piece_count_and_win()
-        
+        self.exchange_tendency = self.return_exchange_tendency()
+        print(self.exchange_tendency)
     
     def return_style_descriptor(self):
         ret = {"Name":"you","draw_percentage": self.draw_percentage,
                "piece_count_at_the_end": self.piece_count_at_the_end,
-               "middlegame_tendency":self.middlegame_tendency}
+               "middlegame_tendency":self.middlegame_tendency,
+               "exchange_tendency":self.exchange_tendency,}
                
         return ret
     
@@ -89,6 +91,19 @@ class StyleDescriptor():
             piece_count[i] = len(end_board.piece_map())        
         
         return np.corrcoef(self.game_result,piece_count)[0,1]
+    
+    
+    def return_exchange_tendency(self):
+        single_game_exchange_tendency = [0] * self.game_num
+        for i,game in enumerate(self.games):
+            end_node = game.end()
+            end_board = end_node.board()
+            captured_piece_count = 32 - len(end_board.piece_map())
+            move_number = end_board.fullmove_number
+            
+            single_game_exchange_tendency[i] = captured_piece_count / move_number
+        
+        return np.mean(single_game_exchange_tendency)
     
     def sigmoid_for_adjustment(self,x):
         return 1/(2*(1+np.exp(0.007*(2550-x)))) + 0.2
@@ -158,45 +173,53 @@ def check_player_side(games,player_name):
 
 
 def create_grandmaster_descriptor():
-    Karpov_sd = {'Name': 'Karpov', 'draw_percentage': 0.44702970297029704, 'piece_count_at_the_end': 15.930445544554455, 'middlegame_tendency': -0.022937725748028093}
-    Kasparov_sd = {'Name': 'Kasparov', 'draw_percentage': 0.3690922730682671, 'piece_count_at_the_end': 15.911102775693923, 'middlegame_tendency': 0.008122524089728179}
-    Fischer_sd = {'Name': 'Fischer', 'draw_percentage': 0.3012295081967213, 'piece_count_at_the_end': 14.906762295081966, 'middlegame_tendency': 0.026533484962836116}
-    Kramnik_sd = {'Name': 'Kramnik', 'draw_percentage': 0.4888002454740718, 'piece_count_at_the_end': 14.978827861307149, 'middlegame_tendency': 0.02969435805925698}
-    Larsen_sd = {'Name': 'Larsen', 'draw_percentage': 0.31271609681137147, 'piece_count_at_the_end': 14.496350364963504, 'middlegame_tendency': 0.016312838284277226}
-    Topalov_sd = {'Name': 'Topalov', 'draw_percentage': 0.4355089355089355, 'piece_count_at_the_end': 14.745920745920746, 'middlegame_tendency': 0.025765173185717465}
-    Morphy_sd = {'Name': 'Morphy', 'draw_percentage': 0.10049019607843138, 'piece_count_at_the_end': 16.620098039215687, 'middlegame_tendency': 0.23115902467275062}
-    Anderssen_sd = {'Name': 'Anderssen', 'draw_percentage': 0.11233480176211454, 'piece_count_at_the_end': 16.07819383259912, 'middlegame_tendency': 0.05981408001198815}
-    Alekhine_sd = {'Name': 'Alekhine', 'draw_percentage': 0.26071428571428573, 'piece_count_at_the_end': 15.595982142857142, 'middlegame_tendency': 0.1929611748458891}
-    Botvinnik_sd = {'Name': 'Botvinnik', 'draw_percentage': 0.3920265780730897, 'piece_count_at_the_end': 15.803156146179402, 'middlegame_tendency': 0.0056127154060222435}
-    Smyslov_sd = {'Name': 'Smyslov', 'draw_percentage': 0.5348511383537653, 'piece_count_at_the_end': 16.75936952714536, 'middlegame_tendency': -0.03822859275528381}
-    Giri_sd = {'Name': 'Giri', 'draw_percentage': 0.48715858132898493, 'piece_count_at_the_end': 14.045250713412148, 'middlegame_tendency': 0.03717428837126662}
-    Carlsen_sd = {'Name': 'Carlsen', 'draw_percentage': 0.38295421825511083, 'piece_count_at_the_end': 13.486610999136193, 'middlegame_tendency': 0.07825857432386059}
-    Lasker_sd = {'Name': 'Lasker', 'draw_percentage': 0.23353819139596138, 'piece_count_at_the_end': 15.697980684811238, 'middlegame_tendency': 0.03981767915399228}
-    Andersson_sd = {'Name': 'Andersson', 'draw_percentage': 0.6042003231017771, 'piece_count_at_the_end': 17.634248788368335, 'middlegame_tendency': -0.1662587246334225}
-    Timman_sd = {'Name': 'Timman', 'draw_percentage': 0.4287856071964018, 'piece_count_at_the_end': 15.513493253373314, 'middlegame_tendency': -0.02731157577761788}
-    Tal_sd = {'Name': 'Tal', 'draw_percentage': 0.4646978954514596, 'piece_count_at_the_end': 17.227427019687713, 'middlegame_tendency': -0.015291308693648083}
-    So_sd = {'Name': 'So', 'draw_percentage': 0.46510656080234014, 'piece_count_at_the_end': 14.162139573756791, 'middlegame_tendency': 0.029006167155991486}
-    Nepomniachtchi_sd = {'Name': 'Nepomniachtchi', 'draw_percentage': 0.3880281690140845, 'piece_count_at_the_end': 13.959154929577466, 'middlegame_tendency': 0.052706795209384476}
-    Bronstein_sd = {'Name': 'Bronstein', 'draw_percentage': 0.4706860706860707, 'piece_count_at_the_end': 17.36881496881497, 'middlegame_tendency': 0.001659329625223538}
-    Capablanca_sd = {'Name': 'Capablanca', 'draw_percentage': 0.31986809563066776, 'piece_count_at_the_end': 15.330585325638912, 'middlegame_tendency': 0.07142765955731484}
+    Karpov_sd = {'Name': 'Karpov', 'draw_percentage': 0.44702970297029704, 'piece_count_at_the_end': 15.930445544554455, 'middlegame_tendency': -0.022937725748028093,"exchange_tendency": 0.39241646971689115}
+    Kasparov_sd = {'Name': 'Kasparov', 'draw_percentage': 0.3690922730682671, 'piece_count_at_the_end': 15.911102775693923, 'middlegame_tendency': 0.008122524089728179,"exchange_tendency": 0.42060666846742606}
+    Fischer_sd = {'Name': 'Fischer', 'draw_percentage': 0.3012295081967213, 'piece_count_at_the_end': 14.906762295081966, 'middlegame_tendency': 0.026533484962836116,
+    "exchange_tendency": 0.43610426100999794}
+    Kramnik_sd = {'Name': 'Kramnik', 'draw_percentage': 0.4888002454740718, 'piece_count_at_the_end': 14.978827861307149, 'middlegame_tendency': 0.02969435805925698,
+    "exchange_tendency": 0.41619604339364913}
+    Morphy_sd = {'Name': 'Morphy', 'draw_percentage': 0.10049019607843138, 'piece_count_at_the_end': 16.620098039215687, 'middlegame_tendency': 0.23115902467275062,
+    "exchange_tendency": 0.5269166141524024}
+    Anderssen_sd = {'Name': 'Anderssen', 'draw_percentage': 0.11233480176211454, 'piece_count_at_the_end': 16.07819383259912, 'middlegame_tendency': 0.05981408001198815,
+    "exchange_tendency": 0.44319676126085567}
+    Alekhine_sd = {'Name': 'Alekhine', 'draw_percentage': 0.26071428571428573, 'piece_count_at_the_end': 15.595982142857142, 'middlegame_tendency': 0.1929611748458891,"exchange_tendency": 0.4303635090637878}
+    Botvinnik_sd = {'Name': 'Botvinnik', 'draw_percentage': 0.3920265780730897, 'piece_count_at_the_end': 15.803156146179402, 'middlegame_tendency': 0.0056127154060222435,
+    "exchange_tendency": 0.40225507474715366}
+    Smyslov_sd = {'Name': 'Smyslov', 'draw_percentage': 0.5348511383537653, 'piece_count_at_the_end': 16.75936952714536, 'middlegame_tendency': -0.03822859275528381,
+    "exchange_tendency": 0.4029078926495648}
+    Carlsen_sd = {'Name': 'Carlsen', 'draw_percentage': 0.38295421825511083, 'piece_count_at_the_end': 13.486610999136193, 'middlegame_tendency': 0.07825857432386059,
+    "exchange_tendency": 0.4157353724695701}
+    Lasker_sd = {'Name': 'Lasker', 'draw_percentage': 0.23353819139596138, 'piece_count_at_the_end': 15.697980684811238, 'middlegame_tendency': 0.03981767915399228,
+    "exchange_tendency": 0.47268486919758396}
+    Andersson_sd = {'Name': 'Andersson', 'draw_percentage': 0.6042003231017771, 'piece_count_at_the_end': 17.634248788368335, 'middlegame_tendency': -0.1662587246334225,
+    "exchange_tendency": 0.3912237660174823}
+    Tal_sd = {'Name': 'Tal', 'draw_percentage': 0.4646978954514596, 'piece_count_at_the_end': 17.227427019687713, 'middlegame_tendency': -0.015291308693648083,
+    "exchange_tendency": 0.42012972137564386}
+    Capablanca_sd = {'Name': 'Capablanca', 'draw_percentage': 0.31986809563066776, 'piece_count_at_the_end': 15.330585325638912, 'middlegame_tendency': 0.07142765955731484,
+    "exchange_tendency": 0.43856108852845116}
+    Staunton_sd = {'Name': 'Staunton', 'draw_percentage': 0.13043478260869565, 'piece_count_at_the_end': 15.658385093167702, 'middlegame_tendency': 0.1778803001280134,
+    "exchange_tendency": 0.4343807334939371}
+    Steinitz_sd = {'Name': 'Steinitz', 'draw_percentage': 0.19053708439897699, 'piece_count_at_the_end': 16.118925831202045, 'middlegame_tendency': 0.12134380745718325,
+    "exchange_tendency": 0.42524662531693047}
+    Euwe_sd = {'Name': 'Euwe', 'draw_percentage': 0.34399052693901716, 'piece_count_at_the_end': 15.788632326820604, 'middlegame_tendency': 0.05342450556868281,
+    "exchange_tendency": 0.43228344615441755}
+    Petrosian_sd = {'Name': 'Petrosian', 'draw_percentage': 0.5457858769931663, 'piece_count_at_the_end': 18.774487471526196, 'middlegame_tendency': -0.17944282165537367,
+    "exchange_tendency": 0.3737722368579535}
+    Spassky_sd = {'Name': 'Spassky', 'draw_percentage': 0.5601229350749135, 'piece_count_at_the_end': 18.17018824433346, 'middlegame_tendency': -0.08694817456669778,
+    "exchange_tendency": 0.40009691659558067}
+    Anand_sd = {'Name': 'Anand', 'draw_percentage': 0.4952635414136507, 'piece_count_at_the_end': 15.549186300704397, 'middlegame_tendency': -0.008019320194790732,
+    "exchange_tendency": 0.4144691515050537}
+    Philidor_sd = {'Name': 'Philidor', 'draw_percentage': 0.13636363636363635, 'piece_count_at_the_end': 15.93939393939394, 'middlegame_tendency': -0.09952062684992309,
+    "exchange_tendency": 0.49723556748404835}
+    Trifunovic_sd = {'Name': 'Trifunovic', 'draw_percentage': 0.6357798165137615, 'piece_count_at_the_end': 17.888073394495414, 'middlegame_tendency': -0.03304775629584045,
+    "exchange_tendency": 0.4114581282650042}
+    Leko_sd = {'Name': 'Leko', 'draw_percentage': 0.5814882032667876, 'piece_count_at_the_end': 15.043557168784028, 'middlegame_tendency': 0.021804468134655513,
+    "exchange_tendency": 0.40053293955591746}
     
-    Staunton_sd = {'Name': 'Staunton', 'draw_percentage': 0.13043478260869565, 'piece_count_at_the_end': 15.658385093167702, 'middlegame_tendency': 0.1778803001280134}
-    Steinitz_sd = {'Name': 'Steinitz', 'draw_percentage': 0.19053708439897699, 'piece_count_at_the_end': 16.118925831202045, 'middlegame_tendency': 0.12134380745718325}
-    Euwe_sd = {'Name': 'Euwe', 'draw_percentage': 0.34399052693901716, 'piece_count_at_the_end': 15.788632326820604, 'middlegame_tendency': 0.05342450556868281}
-    
-    Petrosian_sd = {'Name': 'Petrosian', 'draw_percentage': 0.5457858769931663, 'piece_count_at_the_end': 18.774487471526196, 'middlegame_tendency': -0.17944282165537367}
-    
-    Spassky_sd = {'Name': 'Spassky', 'draw_percentage': 0.5601229350749135, 'piece_count_at_the_end': 18.17018824433346, 'middlegame_tendency': -0.08694817456669778}
-    Anand_sd = {'Name': 'Anand', 'draw_percentage': 0.4952635414136507, 'piece_count_at_the_end': 15.549186300704397, 'middlegame_tendency': -0.008019320194790732}
-    
-    Philidor_sd = {'Name': 'Philidor', 'draw_percentage': 0.13636363636363635, 'piece_count_at_the_end': 15.93939393939394, 'middlegame_tendency': -0.09952062684992309}
-    Trifunovic_sd = {'Name': 'Trifunovic', 'draw_percentage': 0.6357798165137615, 'piece_count_at_the_end': 17.888073394495414, 'middlegame_tendency': -0.03304775629584045}
-    Leko_sd = {'Name': 'Leko', 'draw_percentage': 0.5814882032667876, 'piece_count_at_the_end': 15.043557168784028, 'middlegame_tendency': 0.021804468134655513}
-    
-    ret = [Karpov_sd,Kasparov_sd,Fischer_sd,Kramnik_sd,Larsen_sd,Topalov_sd,
-        Morphy_sd,Anderssen_sd,Alekhine_sd,Botvinnik_sd,Smyslov_sd,Giri_sd, Carlsen_sd,
-        Lasker_sd,Andersson_sd,Timman_sd,Tal_sd,So_sd,Nepomniachtchi_sd,Bronstein_sd,
-        Capablanca_sd,Staunton_sd,Steinitz_sd,Euwe_sd,Petrosian_sd,Spassky_sd,Anand_sd,
+    ret = [Karpov_sd,Kasparov_sd,Fischer_sd,Kramnik_sd,
+        Morphy_sd,Anderssen_sd,Alekhine_sd,Botvinnik_sd,Smyslov_sd,Carlsen_sd,
+        Lasker_sd,Andersson_sd,Tal_sd,Capablanca_sd,Staunton_sd,Steinitz_sd,Euwe_sd,Petrosian_sd,Spassky_sd,Anand_sd,
         Philidor_sd,Trifunovic_sd, Leko_sd]
     
     return ret
@@ -207,13 +230,14 @@ def show_scatterplot(ary):
     label = []
     for a in ary:
         x.append(a["draw_percentage"])
-        y.append(a["middlegame_tendency"])
+        #y.append(a["middlegame_tendency"])
+        y.append(a["exchange_tendency"])
         label.append(a["Name"])
 
     h = sns.jointplot(x=x,y=y)
 
     h.ax_joint.set_xlabel('Draw Percentage',fontsize=20)
-    h.ax_joint.set_ylabel('Middlegame/Endgame Tendency',fontsize=20)
+    h.ax_joint.set_ylabel('Exchange_tendency',fontsize=20)
     for i, txt in enumerate(label):
         h.ax_joint.text(x[i], y[i],txt,fontsize=14) 
     plt.show()
@@ -225,6 +249,7 @@ def save_scatterplot(ary):
     df["sep"] = [n if n == "you" else "GM" for n in df["Name"]]
 
     h = sns.jointplot("draw_percentage","middlegame_tendency",data=df,height=12.0,hue="sep")
+    #h = sns.jointplot(data=df,height=12.0,hue="sep")
 
     for key,row in df.iterrows():
         h.ax_joint.text(row["draw_percentage"], row["middlegame_tendency"],row["Name"],fontsize=14) 
